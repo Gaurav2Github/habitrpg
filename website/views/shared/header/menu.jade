@@ -1,9 +1,5 @@
-nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
-  button.toolbar-toggle(ng-click='isToolbarHidden = !isToolbarHidden', ng-class='{active: isToolbarHidden}')
-    span.glyphicon.glyphicon-remove-circle
-    span.toggle-text.toggle-close=env.t('close')
-    span.toggle-text.toggle-open=env.t('menu')
-  .toolbar-container(ng-if='!isToolbarHidden')
+nav.toolbar(ng-controller='MenuCtrl')
+  .toolbar-container
     ul.toolbar-mobile-nav
       li.toolbar-mobile
         a(ng-click='expandMenu("mobile")', ng-class='{active: _expandedMenu=="mobile"}')
@@ -42,6 +38,8 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
               li
                 a(ui-sref='options.inventory.drops')=env.t('market')
               li
+                a(ui-sref='options.inventory.quests')=env.t('quests')
+              li
                 a(ui-sref='options.inventory.pets')=env.t('pets')
               li
                 a(ui-sref='options.inventory.mounts')=env.t('mounts')
@@ -62,7 +60,7 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
               li
                 a(target="_blank" href='https://github.com/HabitRPG/habitrpg/issues/2760')=env.t('reportBug')
               li
-                a(target="_blank" href='https://habitrpg.com/#/options/groups/guilds/5481ccf3-5d2d-48a9-a871-70a7380cee5a')=env.t('askQuestion')
+                a(target="_blank" href='https://habitica.com/#/options/groups/guilds/5481ccf3-5d2d-48a9-a871-70a7380cee5a')=env.t('askQuestion')
               li
                 a(target="_blank" href='https://trello.com/c/odmhIqyW/440-read-first-table-of-contents')=env.t('requestAF')
               li
@@ -92,7 +90,7 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
             li
               a(ui-sref='options.profile.stats')=env.t('stats')
             li
-              a(ui-sref='options.profile.profile')=env.t('profile') 
+              a(ui-sref='options.profile.profile')=env.t('profile')
       li.toolbar-button-dropdown
         a(ui-sref='options.social.inbox', ng-if='user.inbox.newMessages')
           span.badge.badge-danger {{user.inbox.newMessages}}
@@ -126,6 +124,8 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
             li
               a(ui-sref='options.inventory.drops')=env.t('market')
             li
+              a(ui-sref='options.inventory.quests')=env.t('quests')
+            li
               a(ui-sref='options.inventory.pets')=env.t('pets')
             li
               a(ui-sref='options.inventory.mounts')=env.t('mounts')
@@ -146,8 +146,9 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
               a(target="_blank" ng-href='http://data.habitrpg.com?uuid={{user._id}}')=env.t('dataTool')
             li
               a(ui-sref='options.settings.export')=env.t('exportData')
-      li.toolbar-button-dropdown
+      li.toolbar-button-dropdown.highlight
         a(target="_blank" href='http://habitrpg.wikia.com/wiki/')
+          span.glyphicon.glyphicon-question-sign
           span=env.t('help')
         a(ng-click='expandMenu("help")', ng-class='{active: _expandedMenu == "help"}')
           span  &#9776;
@@ -158,7 +159,7 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
             li
               a(target="_blank" href='https://github.com/HabitRPG/habitrpg/issues/2760')=env.t('reportBug')
             li
-              a(target="_blank" href='https://habitrpg.com/#/options/groups/guilds/5481ccf3-5d2d-48a9-a871-70a7380cee5a')=env.t('askQuestion')
+              a(target="_blank" href='https://habitica.com/#/options/groups/guilds/5481ccf3-5d2d-48a9-a871-70a7380cee5a')=env.t('askQuestion')
             li
               a(target="_blank" href='https://trello.com/c/odmhIqyW/440-read-first-table-of-contents')=env.t('requestAF')
             li
@@ -169,8 +170,8 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
               a(ng-click='showTour()', popover-placement='right', popover-trigger='mouseenter', popover=env.t('restartTour'))= env.t('showTour')
     ul.toolbar-subscribe(ng-if='!user.purchased.plan.customerId')
       li.toolbar-subscribe-button
-        button(ui-sref='options.settings.subscription',popover-trigger='mouseenter',popover-placement='bottom',popover-title=env.t('subscriptions'),popover=env.t('subDescription'),popover-append-to-body='true')=env.t('subscribe')
-    ul.toolbar-options  
+        button.highlight(ui-sref='options.settings.subscription',popover-trigger='mouseenter',popover-placement='bottom',popover-title=env.t('subscriptions'),popover=env.t('subDescription'),popover-append-to-body='true')=env.t('subscribe')
+    ul.toolbar-options
       li.toolbar-notifs
         a(ng-click='expandMenu("notifs")')
           span.glyphicon(ng-class='iconClasses()')
@@ -199,7 +200,7 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
                 a(ng-click='k==party._id ? $state.go("options.social.party") : $state.go("options.social.guilds.detail",{gid:k}); expandMenu(null)')
                   span.glyphicon.glyphicon-comment
                   span {{v.name}}
-                a(ng-click='Groups.seenMessage(k)', popover=env.t('clear'),popover-placement='right',popover-trigger='mouseenter',popover-append-to-body='true')
+                a(ng-click='clearMessages(k)', popover=env.t('clear'),popover-placement='right',popover-trigger='mouseenter',popover-append-to-body='true')
                   span.glyphicon.glyphicon-remove-circle
               // li(ng-if='user.items.special.valentineReceived[0] || user.items.special.nyeReceived[0]')
                 a(ng-click='$state.go("options.inventory.drops"); expandMenu(null)')
@@ -219,7 +220,7 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
           div
             ul.toolbar-submenu(ng-click='expandMenu(null)')
               // Using [{k,v}] instead of {k:v,k:v} to maintain order ('off' at top)
-              for theme in ['off','danielTheBard', 'wattsTheme']
+              for theme in ['off','danielTheBard', 'wattsTheme', 'gokulTheme']
                 li
                   a(ng-class="{'bg-primary':user.preferences.sound=='#{theme}'}", ng-click="set({'preferences.sound':'#{theme}'})")=env.t('audioTheme_'+theme)
 
@@ -264,7 +265,7 @@ nav.toolbar(ng-controller='AuthCtrl', ng-class='{active: isToolbarHidden}')
           span.gem-text {{user.balance * 4 | number:0}}
       li.toolbar-currency.gold(popover=env.t('gold') + ' ({{Shared.gold(user.stats.gp)}})', popover-placement='bottom',popover-trigger='mouseenter')
         span.shop_gold
-        span {{Shared.gold(user.stats.gp) | goldRoundThousandsToK}}
+        span {{Shared.gold(user.stats.gp) | roundLargeNumbers}}
       li.toolbar-currency.silver(popover=env.t('silver'), popover-placement='bottom',popover-trigger='mouseenter')
         span.shop_silver
         span {{Shared.silver(user.stats.gp)}}
